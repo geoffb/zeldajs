@@ -1,0 +1,14 @@
+html {
+	background:#eee;
+}
+body {
+	margin:1em;
+}
+canvas {
+	margin:2em;
+	border:solid 2px #f00;
+	background:#000;
+}
+button {
+	font-size:2em;
+}
