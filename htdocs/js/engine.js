@@ -1,5 +1,3 @@
-YAHOO.namespace('Zelda');
-
 (function() {
 	var rect = function(x, y, w, h) {
 		this.x = x;
@@ -7,7 +5,7 @@ YAHOO.namespace('Zelda');
 		this.width = w;
 		this.height = h;
 	};
-	YAHOO.Zelda.Rectangle = rect;
+	YAHOO.Ganon.Rectangle = rect;
 })();
 
 (function() {
@@ -15,13 +13,13 @@ YAHOO.namespace('Zelda');
 		this.x = x;
 		this.y = y;
 	};
-	YAHOO.Zelda.Point = point;
+	YAHOO.Ganon.Point = point;
 })();
 
 (function() {
-	var Z = YAHOO.Zelda;
+	var G = YAHOO.Ganon;
 	// TODO: The asset loading is sooooo hacky. Must rewrite.
-	var engine = function() {
+	G.Engine = function() {
 		this.last_update = 0;
 		this.elapsed = 0;
 		this.render = null;
@@ -32,16 +30,16 @@ YAHOO.namespace('Zelda');
 		this.player = null;
 		this.current_room = null;
 		this.room_drawn = false;
-		this.assets = new Z.Assets();
+		this.assets = new G.Assets();
 	};
-	var proto = engine.prototype;
+	var proto = G.Engine.prototype;
 	proto.init = function(parent_node) {
 		this.loadAssets();
-		this.render = new Z.Renderer();
+		this.render = new G.Renderer();
 		this.render.scale = 2.0;
 		this.render.init(parent_node);
 		this.initMap();
-		this.player = new Z.Entity();
+		this.player = new G.Entity();
 		this.player.sprite = 0;
 		this.player.animateWhileIdle = false;
 		this.initEntities();
@@ -49,9 +47,9 @@ YAHOO.namespace('Zelda');
 		YAHOO.util.Event.addListener(document, 'keydown', this.keyDown, this);
 	};
 	proto.initMap = function() {
-		this.current_room = new Z.Point(0, 0);
+		this.current_room = new G.Point(0, 0);
 		// TODO: Implement a *real* map loading function...
-		this.map = new Z.Map();
+		this.map = new G.Map();
 		this.map.create(5, 5, 16, 11);
 		var r = this.map.rooms(this.current_room.x, this.current_room.y);
 		r.tiles(0, 0).graphic = [0, 1];
@@ -76,7 +74,7 @@ YAHOO.namespace('Zelda');
 	proto.initEntities = function() {
 		// TODO: Implement entity loading from room data
 		for (var x = 0; x < 6; x++) {
-			var e = new Z.Entity();
+			var e = new G.Entity();
 			e.sprite = Math.floor(Math.random() * 2) + 1;
 			e.x = Math.floor(Math.random() * (15 * 16));
 			e.y = Math.floor(Math.random() * (10 * 16));
@@ -145,10 +143,10 @@ YAHOO.namespace('Zelda');
 	};
 	proto.checkMapCollison = function(r) {
 		var point_list = [];
-		point_list[0] = new Z.Point(r.x, r.y);
-		point_list[1] = new Z.Point(r.x + r.width, r.y);
-		point_list[2] = new Z.Point(r.x, r.y + r.height);
-		point_list[3] = new Z.Point(r.x + r.width, r.y + r.height);
+		point_list[0] = new G.Point(r.x, r.y);
+		point_list[1] = new G.Point(r.x + r.width, r.y);
+		point_list[2] = new G.Point(r.x, r.y + r.height);
+		point_list[3] = new G.Point(r.x + r.width, r.y + r.height);
 		var room = this.map.rooms(this.current_room.x, this.current_room.y);
 		for (var p = 0; p < point_list.length; p++) {
 			var pt = point_list[p];
@@ -202,5 +200,4 @@ YAHOO.namespace('Zelda');
 		if (!this.room_drawn) { this.changeRoom(); };
 		this.doFrame();
 	};
-	Z.Engine = engine;
 })();

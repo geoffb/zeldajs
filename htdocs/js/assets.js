@@ -1,11 +1,9 @@
-YAHOO.namespace('Zelda');
-
 (function() {
-	var Z = YAHOO.Zelda;
-	Z.Assets = function() {
+	var G = YAHOO.Ganon;
+	G.Assets = function() {
 		this.init();
 	};
-	var P = Z.Assets.prototype;
+	var P = G.Assets.prototype;
 	P.init = function() {
 		this.images = [];
 		this.images['world-tiles'] = new Image();

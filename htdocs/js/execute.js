@@ -1,19 +1,17 @@
-YAHOO.namespace('Zelda');
-
-YAHOO.Zelda.runGame = function() {
+var G = YAHOO.Ganon;
+G.runGame = function() {
 	var gameUpdate = function() {
-		zelda.update();
+		e.update();
 		setTimeout(gameUpdate, 50);
 	}
-	var zelda = new YAHOO.Zelda.Engine();
-	var stage = YAHOO.util.Dom.get('zelda-stage');
+	var e = new G.Engine();
+	var stage = YAHOO.util.Dom.get('stage');
 	if (stage === null) {
 		var stage = document.createElement('div');
-		stage.id = 'zelda-stage';
+		stage.id = 'stage';
 		document.body.appendChild(stage);
 	}
-	zelda.init(stage);
+	e.init(stage);
 	setTimeout(gameUpdate, 1000);
 };
-
-YAHOO.Zelda.runGame();
+G.runGame();

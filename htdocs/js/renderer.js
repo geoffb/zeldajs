@@ -1,8 +1,6 @@
-YAHOO.namespace('Zelda');
-
 (function() {
-	var Z = YAHOO.Zelda;
-	var renderer = function() {
+	var G = YAHOO.Ganon;
+	G.Renderer = function() {
 		this.parent_node = null;
 		this.surfaces = [];
 		this.view_width = 320;
@@ -11,7 +9,7 @@ YAHOO.namespace('Zelda');
 		this.tile_height = 16;
 		this.scale = 1.0;
 	};
-	var P = renderer.prototype;
+	var P = G.Renderer.prototype;
 	P.init = function(node) {
 		this.parent_node = node;
 		this.initSurfaces();
@@ -54,10 +52,9 @@ YAHOO.namespace('Zelda');
 		context.drawImage(sprites, ((e.direction * 2) + e.step) * tw, e.sprite * th, tw, th, e.x * s, e.y * s, tw * s, th * s);
 	};
 	P.getBoundingRect = function(e) {
-		return new Z.Rectangle(e.x, e.y, this.tile_width, this.tile_height);
+		return new G.Rectangle(e.x, e.y, this.tile_width, this.tile_height);
 	};
 	P.convertPixelsToTile = function(x, y) {
-		return new Z.Point(Math.floor(x / this.tile_width), Math.floor(y / this.tile_height));
+		return new G.Point(Math.floor(x / this.tile_width), Math.floor(y / this.tile_height));
 	};
-	Z.Renderer = renderer;
 })();
