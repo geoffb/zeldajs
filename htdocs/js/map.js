@@ -1,23 +1,23 @@
 YAHOO.namespace('Zelda');
 
 (function() {
-	var map = function() {
+	var Z = YAHOO.Zelda;
+	Z.Map = function() {
 		this.width = 0;
 		this.height = 0;
 		this.rooms_array = [];
 	};
-	var proto = map.prototype;
-	proto.create = function(w, h, rw, rh) {
+	var P = Z.Map.prototype;
+	P.create = function(w, h, rw, rh) {
 		this.width = w;
 		this.height = h;
 		var length = this.height * this.width;
 		for (var r = 0; r < length; r++) {
-			this.rooms_array[r] = new YAHOO.Zelda.Room();
+			this.rooms_array[r] = new Z.Room();
 			this.rooms_array[r].create(rw, rh);
 		}
 	};
-	proto.rooms = function(x, y) {
+	P.rooms = function(x, y) {
 		return this.rooms_array[(y * this.width) + x];
 	};
-	YAHOO.Zelda.Map = map;
 })();

@@ -18,7 +18,13 @@ YAHOO.namespace('Zelda');
 		this.direction = Math.floor(Math.random() * 4);
 	};
 	proto.think = function() {
-		
+		if (this.roll(.025)) {
+			this.hitWall();
+		}
 	};
+	proto.roll = function(chance) {
+		var r = Math.random();
+		return (r <= chance);
+	}
 	YAHOO.Zelda.Entity = entity;
 })();

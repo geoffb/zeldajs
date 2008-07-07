@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://ns.adobe.com/air/application/1.0">
+	<id>examples.geoff.Zelda</id>
+	<version>0.1</version>
+	<filename>ZELDA</filename>
+	<name>ZELDA</name>
+	<description>Remake of Legend of Zelda.</description>
+	<initialWindow>
+		<title>ZELDA</title>
+		<content>htdocs/stage.html</content>
+		<visible>true</visible>
+		<width>640</width>
+		<height>480</height>
+		<minSize>640 480</minSize>
+		<maxSize>640 480</maxSize>
+		<minimizable>true</minimizable>
+		<maximizable>false</maximizable> 
+		<resizable>false</resizable>
+	</initialWindow>
+</application>

@@ -3,7 +3,7 @@ YAHOO.namespace('Zelda');
 YAHOO.Zelda.runGame = function() {
 	var gameUpdate = function() {
 		zelda.update();
-		setTimeout(gameUpdate, 15);
+		setTimeout(gameUpdate, 50);
 	}
 	var zelda = new YAHOO.Zelda.Engine();
 	var stage = YAHOO.util.Dom.get('zelda-stage');
