@@ -8,4 +8,8 @@
 		this.graphic = [gx, gy];
 		this.walkable = walkable;
 	};
+	P.load = function(data) {
+		this.graphic = [data[0], data[1]];
+		this.walkable = data[2];
+	}
 })();

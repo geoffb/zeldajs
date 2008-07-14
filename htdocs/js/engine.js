@@ -1,3 +1,15 @@
+/*
+
+CHANGE ROOM:
+	set room changing engine state
+	despawn all entities in room
+	move current room buffer contents to room buffer 2
+	
+	
+
+
+*/
+
 (function() {
 	var rect = function(x, y, w, h) {
 		this.x = x;
@@ -31,6 +43,10 @@
 		this.current_room = null;
 		this.room_drawn = false;
 		this.assets = new G.Assets();
+		this.handle_input = false;
+		this.state = 'running';
+		this.change_direction = false;
+		this.change_start = 0;
 	};
 	var proto = G.Engine.prototype;
 	proto.init = function(parent_node) {
@@ -41,15 +57,20 @@
 		this.initMap();
 		this.player = new G.Entity();
 		this.player.sprite = 0;
+		this.player.x = 7 * 16;
+		this.player.y = 6 * 16;
 		this.player.animateWhileIdle = false;
 		this.initEntities();
 		YAHOO.util.Event.addListener(document, 'keyup', this.keyUp, this);
 		YAHOO.util.Event.addListener(document, 'keydown', this.keyDown, this);
+		this.handle_input = true;
 	};
 	proto.initMap = function() {
 		this.current_room = new G.Point(0, 0);
 		// TODO: Implement a *real* map loading function...
 		this.map = new G.Map();
+		this.map.load(this.assets.maps['overworld']);
+		/*
 		this.map.create(5, 5, 16, 11);
 		var r = this.map.rooms(this.current_room.x, this.current_room.y);
 		r.tiles(0, 0).graphic = [0, 1];
@@ -69,6 +90,7 @@
 		r.tiles(13, 0).graphic = [0, 1];
 		r.tiles(14, 0).graphic = [0, 1];
 		r.tiles(15, 0).graphic = [0, 1];
+		*/
 		//console.log(this.map);
 	};
 	proto.initEntities = function() {
@@ -83,6 +105,9 @@
 			this.entities[x] = e;
 		}
 	};
+	proto.resetEntities = function() {
+		this.entities = [];
+	};
 	proto.loadAssets = function() {
 		return false;
 		this.tiles = new Image();
@@ -92,15 +117,38 @@
 
 	};
 	proto.doFrame = function() {
-		this.render.drawRoomToView();
-		// player
-		this.updateEntity(this.player);
-		this.render.drawEntityToView(this.player, this.assets.images['sprites']);
-		// non player entities
-		var len = this.entities.length;
-		for (var e = 0; e < len; e++) {
-			this.updateEntity(this.entities[e]);
-			this.render.drawEntityToView(this.entities[e], this.assets.images['sprites']);
+		
+		
+		if (this.state === 'room_change') {
+			if (this.render.drawChangeRoomToView(this.last_update - this.change_start, 12, this.change_direction)) {
+				this.render.drawRoomToView();
+				this.state = '';
+				this.handle_input = true;
+				return;
+			}
+			this.player.y -= (12 * (this.elapsed / 100));
+			if (this.player.y < 0) { this.player.y = 0; }
+			this.render.drawEntityToView(this.player, this.assets.images['sprites']);
+		} else {
+			this.change_direction = this.checkRoomExit();
+			if (this.change_direction !== false) {
+				this.change_start = this.last_update;
+				this.handle_input = false;
+				this.state = 'room_change';
+				this.render.copy('room_buffer', 'room_buffer2');
+				this.resetEntities();
+				this.current_room = this.map.roomWalk(this.current_room, this.change_direction);
+				this.changeRoom();
+				return;
+			}
+			this.render.drawRoomToView();
+			this.updateEntity(this.player);
+			this.render.drawEntityToView(this.player, this.assets.images['sprites']);
+			var len = this.entities.length;
+			for (var e = 0; e < len; e++) {
+				this.updateEntity(this.entities[e]);
+				this.render.drawEntityToView(this.entities[e], this.assets.images['sprites']);
+			}
 		}
 	};
 	proto.updateEntity = function(e) {
@@ -141,7 +189,20 @@
 			}
 		}
 	};
-	proto.checkMapCollison = function(r) {
+	proto.checkRoomExit = function() {
+		var e = this.player;
+		if (!e.moving) { return false; }
+		var er = this.render.getEntityNextBoundingRect(e, this.elapsed);
+		var rr = this.render.getRoomBoundingRect(this.currentRoom());
+		if (er.x < rr.x || (er.x + er.width) > rr.width || er.y < rr.y || (er.y + er.height) > rr.height) {
+			return e.direction;
+		}
+		return false;
+	};
+	proto.currentRoom = function() {
+		return this.map.rooms(this.current_room.x, this.current_room.y);
+	};
+	proto.checkMapCollison = function(r) {		
 		var point_list = [];
 		point_list[0] = new G.Point(r.x, r.y);
 		point_list[1] = new G.Point(r.x + r.width, r.y);
@@ -163,11 +224,13 @@
 		this.room_drawn = true;
 	};
 	proto.keyUp = function(e, me) {
+		if (this.handle_input === false) { return; }
 		if (e.keyCode >= 37 && e.keyCode <= 40) {
 			me.player.moving -= 1;
 		}
 	};
 	proto.keyDown = function(e, me) {
+		if (this.handle_input === false) { return; }
 		var d = null;
 		switch (e.keyCode) {
 			case 37:

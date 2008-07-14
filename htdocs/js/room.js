@@ -19,4 +19,13 @@
 		if (x < 0 || x >= this.width || y < 0 || y >= this.height) { return false; }
 		return this.tiles_array[(y * this.width) + x];
 	};
+	P.load = function(data) {
+		this.width = 16;
+		this.height = 11;
+		var len = data.length;
+		for (var x = 0; x < len; x++) {
+			this.tiles_array[x] = new G.Tile();
+			this.tiles_array[x].load(data[x]);
+		}
+	};
 })();
